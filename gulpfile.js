@@ -55,15 +55,16 @@ gulp.task('css', function(){
 
   // require every used processors
   var processors = [
-    atImport = require('postcss-import'),
-    mqpacker = require('css-mqpacker')({ sort: true }),
-    lost     = require('lost'),
-    cssnext  = require('postcss-cssnext')({
-                 browsers: ['IE 9', 'last 5 versions', 'Firefox 14', 'Opera 11.1']
-               }),
-    cssSize  = require('postcss-size'),
-    precss   = require('precss'),
-    rucksack = require('rucksack-css')
+    require('postcss-import'),
+    require('css-mqpacker')({ sort: true }),
+    require('lost'),
+    require('postcss-cssnext')({
+      browsers: ['IE 9', 'last 5 versions', 'Firefox 14', 'Opera 11.1']
+    }),
+    require('postcss-size'),
+    require('precss'),
+    require('rucksack-css'),
+    require('postcss-short-spacing')
   ];
 
   var options = {
@@ -79,7 +80,6 @@ gulp.task('css', function(){
     .pipe(prod ? plugins.cssnano(options) : plugins.util.noop())
     .pipe(plugins.sourcemaps.write('.'))
     .pipe(gulp.dest(dist + css));
-
 });
 
 // js task use Browserify

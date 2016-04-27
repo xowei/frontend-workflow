@@ -7,7 +7,8 @@
     "pug",
     "postcss",
     "postcss-plugin",
-    "browserify"
+    "browserify",
+    "jquery"
   ],
   "author": "Wei <lovesyushi@gmail.com>",
   "repository": {
@@ -35,6 +36,7 @@
     "postcss": "^5.0.19",
     "postcss-cssnext": "^2.5.2",
     "postcss-import": "^8.1.0",
+    "postcss-short-spacing": "^1.0.0",
     "postcss-size": "^1.0.0",
     "precss": "^1.4.0",
     "pug": "^2.0.0-alpha6",
@@ -43,7 +45,6 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "font-awesome": "^4.6.1",
     "jquery": "^2.2.3"
   }
 }
