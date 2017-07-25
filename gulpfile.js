@@ -42,9 +42,12 @@ gulp.task('pug', function(){
     minifyCSS: true
   };
 
-  gulp.src(src + '*.pug')
+  gulp.src([src + '*.pug',
+            '!' + src + 'includes/**/*.pug'])
     .pipe(plugins.plumber())
-    .pipe(plugins.pug({ pretty: true, extension: '.html' }))
+    .pipe(plugins.pug({ basedir: src,
+                        extension: '.html',
+                        pretty: true }))
     .pipe(prod ? plugins.htmlmin(options) : plugins.util.noop())
     .pipe(gulp.dest(dist));
 });
