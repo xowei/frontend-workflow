@@ -1,11 +1,12 @@
 console.log('Gulp setting: BrowserSync + Pug + PostCSS + Browserify');
 
-var gulp    = require('gulp');
-var $ = require('gulp-load-plugins')({
+const { series, parallel, src, dest, watch } = require('gulp');
+const sugarss = require('sugarss');
+const $ = require('gulp-load-plugins')({
   DEBUG: false,
   scope: ['devDependencies'],
   pattern: [ 'browser-sync', 'browserify', 'del',
-             'gulp-*', 'gulp.*', 'vinyl-*' ],
+             'gulp-*', 'gulp.*', 'vinyl-*'],
   lazy: true,
   rename: { 'vinyl-buffer'        : 'buffer',
             'vinyl-source-stream' : 'source' }
@@ -15,23 +16,7 @@ var $ = require('gulp-load-plugins')({
 var prod    = !!$.util.env.production;
 console.log('production: ' + $.util.env.production);
 
-var
-  coFiles  = '**/*.*'       , // cofiles
-  dist     = 'dist/'        , // dist folder
-  host     = 'your ip/'     , // set your ip
-  nodePath = 'node_modules/', // node modules folder
-  proxy    = 'localhost/'   , // it's useless if browserSync haven't a proxy
-  src      = 'src/'         , // source folder
-
-  css    = 'css/'    ,
-  fonts  = 'fonts/'  ,
-  images = 'images/' ,
-  js     = 'js/'     ,
-  sprite = 'sprite/*';
-
-
-// pug task
-gulp.task('pug', function(){
+function pug() {
   var options = {
     removeComments: true,
     collapseWhitespace: true,
@@ -42,25 +27,18 @@ gulp.task('pug', function(){
     minifyJS: true,
     minifyCSS: true
   };
-
-  gulp.src([src + '*.pug',
-            '!' + src + 'includes/**/*.pug'])
-    .pipe($.changed(dist, { extension: '.html' }))
+  
+  return src(['src/*.pug', '!src/includes/**/*.pug'])
     .pipe($.plumber())
-    .pipe($.pug({ basedir: src,
-                        pretty: true }))
+    .pipe($.pug({ basedir: 'src/',
+                  pretty: true }))
     .pipe(prod ? $.htmlmin(options) : $.util.noop())
-    .pipe(gulp.dest(dist));
-});
+    .pipe(dest('dist/'));
+}
 
-
-// css task use PostCSS
-gulp.task('css', function(){
-
-  // require every used processors
+function css() {
   var processors = [
     require('postcss-import'),
-    require('precss'),
     require('rucksack-css'),
     require('lost'),
     require('postcss-cssnext')({
@@ -77,21 +55,19 @@ gulp.task('css', function(){
     zindex: false
   };
 
-  gulp.src(src + css + 'styles.css')
+  return src('src/css/styles.css')
     .pipe($.plumber())
     .pipe($.sourcemaps.init({ loadMaps: true }))
-    .pipe($.postcss(processors))
+    .pipe($.postcss(processors, { parser: sugarss }))
     .pipe(prod ? $.cssnano(cssnanoConfig) : $.util.noop())
     .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest(dist + css));
-});
+    .pipe(dest('dist/css/'));
+}
 
-// js task use Browserify
-gulp.task('js', function () {
-
+function js() {
   var b = $.browserify({
     debug: true,
-    entries: src + js + 'scripts.js',
+    entries: 'src/js/scripts.js',
   });
 
   return b.bundle()
@@ -102,48 +78,45 @@ gulp.task('js', function () {
     .pipe($.sourcemaps.init({ loadMaps: true }))
     .pipe(prod ? $.uglify() : $.util.noop())
     .pipe($.sourcemaps.write('.'))
-    .pipe(gulp.dest(dist + js));
-});
+    .pipe(dest('dist/js/'));
+}
 
-// assets task
-gulp.task('assets:images', function(){
-  gulp.src(src + images + coFiles)
+function images(){
+  return src('src/images/*.*', { allowEmpty: true })
     .pipe($.imagemin({ progressive: true }))
-    .pipe(gulp.dest(dist + images));
-});
+    .pipe(dest('dist/images/'));
+};
 
-gulp.task('assets:fonts', function(){
-  gulp.src(src + fonts)
-    .pipe(gulp.dest(dist + fonts));
-});
+function fonts(){
+  return src('src/fonts/', { allowEmpty: true })
+    .pipe(dest('dist/fonts/'));
+};
 
-gulp.task('assets', ['assets:images', 'assets:fonts']);
+function del() {
+  $.del('dist');
+};
 
-// del task
-gulp.task('del', function() {
-  $.del(dist);
-});
-
-// watch task
-gulp.task('watch', function () {
+function watchServer() {
   $.browserSync.init({
-    host: host,
     notify: false,
     open: true,
-    // proxy: proxy,
-    server: dist,
+    server: 'dist/',
   });
 
-  gulp.watch([src + '**/*.pug',
-              src + '*.pug'       ]  , ['pug']           );
-  gulp.watch(src + css    + coFiles  , ['css']           );
-  gulp.watch(src + js     + coFiles  , ['js']            );
-  gulp.watch(src + images + coFiles  , ['assets:images'] );
-  gulp.watch(src + fonts  + coFiles  , ['assets:fonts']  );
+  watch(['src/**/*.pug', 'src/*.pug'], pug);
+  watch('src/css/*.*', css);
+  watch('src/js/*.*', js);
+  watch('src/images/*.*', images);
+  watch('src/fonts /*.*', fonts);
 
-  return gulp.watch(src + coFiles).on('change', $.browserSync.reload);
-});
+  watch(['src/*.*', 'src/**/*.*']).on('change', $.browserSync.reload);
+};
 
-// init / default
-gulp.task('init', ['css', 'js', 'pug', 'assets']);
-gulp.task('default', [ 'init', 'watch' ]);
+
+
+exports.del = del;
+exports.pug = pug;
+exports.css = css;
+exports.js = js;
+exports.watchServer = watchServer;
+exports.default = series(parallel(pug, css, js, fonts, images), watchServer);
