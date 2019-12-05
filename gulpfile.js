@@ -39,11 +39,13 @@ function pug() {
 function css() {
   var processors = [
     require('postcss-import'),
-    require('rucksack-css'),
-    require('lost'),
     require('postcss-cssnext')({
       browsers: ['IE 9', 'last 5 versions', 'Firefox 14', 'Opera 11.1'],
     }),
+    require('postcss-mixins'),
+    require('postcss-nested'),
+    require('rucksack-css'),
+    require('lost'),
     require('postcss-reporter')({ clearMessages: true })
   ];
 
@@ -96,7 +98,7 @@ function del() {
   $.del('dist');
 };
 
-function watchServer() {
+function server() {
   $.browserSync.init({
     notify: false,
     open: true,
@@ -112,11 +114,10 @@ function watchServer() {
   watch(['src/*.*', 'src/**/*.*']).on('change', $.browserSync.reload);
 };
 
-
-
 exports.del = del;
 exports.pug = pug;
 exports.css = css;
 exports.js = js;
-exports.watchServer = watchServer;
-exports.default = series(parallel(pug, css, js, fonts, images), watchServer);
+exports.assets = parallel(fonts, images);
+exports.server = server;
+exports.default = series(parallel(pug, css, js, fonts, images), server);

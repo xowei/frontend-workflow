@@ -1,6 +1,6 @@
 {
   "name": "frontend-workflow",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "keywords": [
     "gulp",
     "browsersync",
@@ -22,7 +22,6 @@
     "browser-sync": "^2.26.7",
     "browserify": "^16.5.0",
     "del": "^5.1.0",
-    "gulp": "^4.0.2",
     "gulp-cssnano": "^2.1.3",
     "gulp-htmlmin": "^5.0.1",
     "gulp-imagemin": "^6.2.0",
@@ -33,20 +32,23 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "gulp-util": "^3.0.8",
-    "jquery": "^3.4.1",
+    "gulp": "^4.0.2",
     "lost": "^8.3.1",
-    "postcss": "^7.0.23",
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^12.0.1",
+    "postcss-mixins": "^6.2.3",
+    "postcss-nested": "^4.2.1",
     "postcss-reporter": "^6.0.1",
+    "postcss": "^7.0.23",
     "pug": "^2.0.4",
     "rucksack-css": "^1.0.2",
-    "stylelint": "^12.0.0",
     "stylelint-config-standard": "^19.0.0",
+    "stylelint": "^12.0.0",
+    "sugarss": "^2.0.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "sugarss": "^2.0.0"
+    "jquery": "^3.4.1"
   }
 }
