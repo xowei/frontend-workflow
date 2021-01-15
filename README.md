@@ -23,13 +23,16 @@ Install dependencies `npm install`
 
 > dist folder is **for public** : contains HTML, CSS, javascript, fonts, compressed images etc.
 
+- `gulp` or `npm run dev`: Start dev mode server. Local view: [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
+- `gulp --production` or `npm start`: run all the tasks. Compressed html, css and js and open server
+
+- `gulp build --production` or `npm run build` run all the tasks. Compressed html, css and js without open server
+
+---
 - `gulp pug` Compile Pug to HTML
 - `gulp css` Compile PostCSS to single CSS file named 'styles.css'
 - `gulp js` Compile script.js with browserify to single javascript file named 'scripts.js'
 - `gulp assets` copy fonts and compressed images
-- `gulp` run all of the above task and open browser-sync server
-- `gulp --production` run all the tasks. Compressed html, css, js
+- `gulp`, `npm start` run all of the above task and open browser-sync server using production mode
 - `gulp del` remove dist folder
-
-- `gulp` or `gulp server` open browser-sync server，Local view: [http://127.0.0.1:3000/](http://127.0.0.1:3000/)

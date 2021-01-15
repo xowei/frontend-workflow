@@ -123,4 +123,5 @@ exports.css = css;
 exports.js = js;
 exports.assets = parallel(fonts, images);
 exports.server = server;
+exports.build = parallel(pug, css, js, fonts, images);
 exports.default = series(parallel(pug, css, js, fonts, images), server);
